@@ -1,0 +1,107 @@
+Before submitting this file, make sure that there are no more TODO
+values left in the file (besides the one in this introduction of course).
+
+Warmup and Debugging Exercise
+-----------------------------
+Q1. Is the first queue element displayed in debugger pane (element [0]) the element at front of queue or the back?  Is the first stack element displayed on the top of stack or the bottom?
+A1: Element [0] in the queue is at the front of the queue. Element [0] in the stack is at the bottom of the stack.
+
+
+Q2: What must be true about the input to `duplicateNegatives` for it to produce correct output?
+A2: As written, duplicateNegatives is only correct if the input contains no negative numbers.
+
+
+Q3: For which type of inputs does `duplicateNegatives ` go into an infinite loop?
+A3: If the input consists solely of any number of negative integers, then the function enters an infinite loop.
+
+
+Q4. What is the bug within `duplicateNegatives ` that causes it to get stuck in a loop?
+A4: The bug is in using a loop variable `i` that is tied to `q.size()`, which is not constant but changes within the loop.
+Every time a negative number is encountered, `q.size()` increases by 1. So, the number of negative integers added to the
+queue will end up being exponential rather than linear, and the loop will never terminate because `i` increases linearly
+via incrementing (`i++`), but within the loop, `q.size()` increases exponentially. We fix this by assigning the initial
+`q.size()` to a constant variable `size` and terminating the loop when `i >= size`.
+
+
+Q5: What is the state of the variables (as reported in the debugger variable pane) right 
+before the removeMatchPair function crashes? What happens if you try to step over the line 
+where the program crashes?
+A5:
+
+Locals
+__for_begin	@0x7fffcf7fd170	Map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >::iterator
+__for_end	@0x7fffcf7fd1a0	Map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >::iterator
+__for_range	<2 items>	Map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > &
+key	"Jan"	std::string
+map	<2 items>	Map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > &
+	[0] "Margaret"	"Meg"
+		key	"Margaret"	std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >
+		value	"Meg"	std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >
+	[1] "Thomas"	"Tom"
+		key	"Thomas"	std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >
+		value	"Tom"	std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >
+
+If we try to proceed to the `if map[key] == key` comparison, the program crashes, because the key is no longer in the iterator.
+To fix this problem, all we need is to save the set of initial keys to a vector `keys` to use as an iterator.
+
+
+Maze
+-------
+Q6. So far in this class, we've passed our data structures by reference. Why do you 
+think `checkSolution` passes path by value instead of by reference?
+A6: The nature of the stack ADT is that you can't really modify it in-place, because
+you can't access any elements that aren't the top element of the stack. Therefore,
+we need to consume the path object passed into `checkSolution` in order to use it
+appropriately, so there's no point passing it by reference rather than by value.
+
+Q7. After you have written your tests, describe your testing strategy to determine 
+that your `checkSolution` works as intended.
+A7: I wrote different kinds of wrong test cases to make sure that the different flavors
+of error were being thrown where I expected them to be thrown. (I wouldn't want a "maze
+exit error" when I was expecting a "teleporting through walls" type of error, for example.)
+I also printed out the mazes and solutions so that I could visually inspect and sanity-
+check my implementations to make sure that I had correctly specified both the test cases
+and solutions, and didn't have bogus test cases.
+
+Q8. Describe the malformed maze files you created in order to verify the robustness 
+of your maze reading.
+A8: I created maze files that had inconsistent line lengths and maze files that contain
+characters outside of the permitted set {@, -}. To do so, I modified existing, otherwise
+valid mazes to have small problems, on the theory that it would be more likely that I might
+introduce additional bogus errors if I made new mazes from scratch than if I used existing,
+known-to-be-valid mazes and gave them small imperfections that might be harder to catch.
+
+
+Search Engine
+-------------
+Q9: What would the sample inverted index for the tiny.txt file look like?
+A9:
+{
+    "www.bigbadwolf.com" : {"eat", "i'm", "not", "to", "trying", "you"},
+    "www.dr.seuss.net" : { "blue", "fish", "one", "red", "two"},
+    "www.rainbow.org" : { "blue", "green", "indigo", "orange", "red", "violet", "yellow"},
+    "www.shoppinglist.com" :{ "bread", "cheese", "eggs", "fish", "milk"}
+}
+
+{
+"eat": {"www.bigbadwolf.com"},
+"i'm": {"www.bigbadwolf.com"},
+"not": {"www.bigbadwolf.com"},
+"to": {"www.bigbadwolf.com"},
+"trying": {"www.bigbadwolf.com"},
+"you": {"www.bigbadwolf.com"},
+"blue": {"www.dr.seuss.net", "www.rainbow.org"},
+"fish": {"www.dr.seuss.net", "www.shoppinglist.com"},
+"one": {"www.dr.seuss.net"},
+"red": {"www.dr.seuss.net", "www.rainbow.org"},
+"two": {"www.dr.seuss.net"},
+"green": {"www.rainbow.org"},
+"indigo": {"www.rainbow.org"},
+"orange": {"www.rainbow.org"},
+"violet": {"www.rainbow.org"},
+"yellow": {"www.rainbow.org"},
+"bread": {"www.shoppinglist.com"},
+"cheese": {"www.shoppinglist.com"},
+"eggs": {"www.shoppinglist.com"},
+"milk": {"www.shoppinglist.com"}
+}

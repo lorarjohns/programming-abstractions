@@ -1,0 +1,148 @@
+Before submitting this file, make sure that there are no more TODO
+values left in the file (besides the one in this introduction of course).
+
+Perfect Numbers
+---------------
+Q1: How many numbers does the program search through? How many perfect
+numbers does it find? What are these perfect numbers?
+A1:
+
+The program searches 39999 numbers (1 through 40000, non-inclusive of the endpoint). \\
+There are four perfect numbers in this interval, namely 6, 28, 496, and 8128.
+
+Q2: Search Size and Runtime for Exhaustive Algorithm
+A2:
+Search Size: 20000 	Runtime: 1.389 secs
+Search Size: 40000 	Runtime: 5.287 secs
+Search Size: 80000	Runtime: 22.023 secs
+Search Size: 160000	Runtime: 86.095 secs
+Search Size: 320000	Runtime: 352.235 secs
+Search Size: 640000	Runtime: 1374.22 secs
+
+
+(optional) Plot these values on a graph of runtime vs. Search size and
+see if you can find a trend in the graph.
+
+
+Q3: Does it take the same amount of work to evaluate the isPerfect algorithm
+on the number 10 as it does on the number 1000? Why or why not? Does it 
+take the same amount of work for the findPerfects algorithm to search
+the range of numbers from 1-1000 as it does to search the numbers from 
+1000-2000? Why or why not?
+A3:
+It takes less work to evaluate the \texttt{isPerfect} algorithm on the number 10 than on the number 1000.
+That's because it calls \texttt{divisorSum}, which checks to see whether any number in the range $[1, n)$
+is a divisor of $n$ for each $n$ between 1 and the stopping point. There is less computation
+required when the stopping point is 10 than when it is 1000.
+
+
+Q4: Make a prediction of how long it would take the exhaustive algorithm
+to reach the 5th perfect number.
+A4: The next perfect number, 33550336, is approximately 3.35x10^7, so the algorithm would take approximately
+3,700,219 seconds, or close to 43 days. See: https://www.desmos.com/calculator/sizc06ozkk
+
+
+Q5: Introduce a bug into the divisorSum function. Do any of the tests still
+pass even with this broken function? Why or why not?
+A5:
+Even with a bug in the \texttt{divisorSum} function, some of the tests still pass.
+When \texttt{divisor} is initialized to 1 instead of 0, the time trials still succeed,
+because they are agnostic as to return values, and the negative value tests still succeed,
+because no negative number is perfect. The "Imperfect numbers" test passes because even
+with the incorrect initialization, the correct boolean value will be returned.
+
+Q6: Can the test framework detect that the test case is "bogus" in the sense
+that the premise of the test case itself is off-base?
+A6:
+The test framework cannot detect that the test case is "bogus", because the test framework
+is not capable of reading the programmer's mind to detect their intention. The test did
+exactly what I asked it to do, which was to fail if \texttt{isPerfect} did not return True
+for the number 5. There's no automatic way to detect bogus test cases -- it requires careful
+human auditing and good documentation.
+
+
+Q7: Describe your testing strategy to determine that smarterSum was working
+as expected.
+A7: I tested \texttt{smarterSum} against \texttt{divisorSum} using:
+
+1) known perfect numbers
+2) a perfect square
+3) 0 and 1
+4) a negative number
+
+Fixing edge cases required stepping into the debugger to see why my implementation was
+failing to match the known-to-be-correct function's output.
+
+
+Q8: Search Size and Runtime for Smarter Search
+A8:
+Search Size: 20000 	Runtime: 0.037
+Search Size: 40000 	Runtime: 0.064
+Search Size: 80000	Runtime: 0.158
+Search Size: 160000	Runtime: 0.411
+Search Size: 320000	Runtime: 1.146
+Search Size: 640000	Runtime: 3.136
+
+
+(optional) Plot these values on a graph of runtime vs. search size and
+see if you can find a trend in the graph.
+
+
+Q9: How long will the optimized code take to reach the fifth perfect number?
+A9:
+
+Since this algorithm runs in $N\sqrt{N}$ time, it will probably take about 17 minutes to find
+the fifth perfect number. See: https://www.desmos.com/calculator/oew9tb9sxk for another graph
+and a regression.
+
+Q10: What test cases did you use to verify that your new function works correctly?
+Please give a brief description of your testing strategy.
+A10:
+
+First, I implemented and tested the \texttt{isPrime} helper function, writing test cases to make sure
+it worked perfectly before beginning to develop the full algorithm.
+
+My strategy was to use values that I had already verified with my previous algorithm, and to test
+against those values directly as well as against the output of the vetted algorithm. I used edge cases
+that I knew would pose a problem (like 0, 1, perfect squares, and negative numbers) to make sure there
+wouldn't be weird behaviors later on.
+
+I tested the output to make sure the returned values were perfect with \texttt{isPerfectSmarter} and
+then checked to make sure they were the \emph{correct} values using \texttt{EXPECT_EQUAL}.
+
+Soundex
+-------
+Q11: What is the Soundex code for "Bowman"? What is the Soundex code for your own surname?
+A11: "Bowman" becomes "B5000". "Johns" becomes "J5200".
+
+
+Q12: Please describe your general decomposition strategy for implementing
+the Soundex code generation algorithm.
+A12:
+I broke the algorithm down into the component steps and wrote a helper function for
+each sub-task that I needed to accomplish, testing them before moving on. Some helper
+functions required helpers of their own. My strategy was to break the problem into the
+following sub-functions:
+
+soundex (return the actual soundex code)
+├── removeNonLetters (remove non-letters)
+├── encodeCharacters (make first character uppercase first letter of name and encode the rest)
+│   ├── lowercaseString (convert string to lowercase)
+├── coalesceDigits (remove adjacent repeated digits)
+├── removeZeros (remove zeros from string)
+└── normalizeLength (pad or truncate to 4 characters)
+
+Q13: Think about one or more examples of a class of names that the Soundex system
+might not work well for. Explain what this class of names is and why the system might
+incorrectly group them or mis-categorize one of the names.
+A13:
+Names that are very long, like some German or Spanish names, or any compound
+or hyphenated names, and names that are heavy on vowels, like French names, will probably
+be mis-categorized. In the case of long names, truncating the code to length 4 means that
+a lot of the distinguishing variation will be lost, as the algorithm discards information
+beyond length 4. In the case of a name with many vowels, the algorithm discards so much
+information that we might only see the initial letter of the name, padded with zeros. This
+strategy preserves so little of the original name's data that we will only be able to very
+coarsely categorize it -- essentially, the algorithm is now a fancy alphabetizer.
+Likewise, we will end up with a lot of mis-categorized names that only consist of letters in
+the '0' category (e.g. "Huey", "Howe").

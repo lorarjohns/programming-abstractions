@@ -1,0 +1,23 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\author{Ray Johns}
+\title{C++ Legs}
+\begin{document}
+\title{Assignment 1}
+\maketitle
+
+\section{Q1}
+
+The program searches 39999 numbers (1 through 40000, non-inclusive of the endpoint). \\
+There are four perfect numbers in this interval, namely 6, 28, 496, and 8128.
+
+\section{Q3}
+
+It takes less work to evaluate the \texttt{isPerfect} algorithm on the number 10 than on the number 1000. That's because it calls \texttt{divisorSum}, which checks to see whether any number in the range $[1, n)$ is a divisor of $n$ for each $n$ between 1 and the stopping point. There is less computation required when the stopping point is 10 than when it is 1000.
+
+It takes more work to search the range $[1000, 2000)$ than the range $[1, 1000)$, because of the computation required to evaluate \texttt{divisorSum}: since 1000 is greater than 1 by three orders of magnitude, there are correspondingly more divisors to check for each $n$ in the range.
+\end{document}
