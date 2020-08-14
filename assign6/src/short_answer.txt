@@ -1,0 +1,42 @@
+                                       Before submitting this file, make sure that there are no more TODO
+values left in the file (besides the one in this introduction of course).
+
+Warmup
+------
+Q1: Decode the character(s) from the bit sequence `0101100011`
+A1: MOONS
+
+Q2: Encode the string "SONS" into its bit sequence.
+A2: 011100011
+
+Q3: Give the flattened sequences for the encoding tree that you used for Questions 1 and 2.
+A3: 1101000
+
+Q4: Cover up the example trees and confirm that you can correctly rebuild the tree from its flattened sequences. What process did you go through to convince yourself that you could properly rebuild the tree from the two flattened sequences?
+A4: This is like `countleft.cpp` from section 7. Proceeding left to right through the encoded string, if we see a 0, we know that this node has no children. If we see a 1, we branch. The next number indicates the left child, so if that is a 1,
+we recursively continue to process the string until that child's child nodes are full. Then any remaining numbers are right children further up the tree.
+
+Q5. Show an optimal Huffman coding tree for the input "BOOKKEEPER".
+A5:
+                    *
+                    |
+                0   |   1
+            +-------+--------+
+            |                |
+          0 | 1            0 | 1
+        K---+---*        +---*---*
+                |        |       |
+              0 | 1      |     0 | 1
+            B---+---P    E   R---*---O
+
+
+Q6. A node in a Huffman coding tree has two non-null children or zero. Why is not possible for a node to have just one non-null child?
+A6: Huffman coding is a bottom-up greedy algorithm. Since it is greedy, we will never go up to the next level in the tree until we have
+filled the lower level completely. We dequeue two values at a time and make them children of some new, arbitrary root node, then add the new
+root back on to the end. We'll end up with two values that get merged into one last root as its children.
+
+Q7. Describe the difference in shape of a Huffman coding tree that will lead to significant savings for compression versus one that will achieve little to no compression.
+A7: If all the characters in our source occurred with almost equal frequency, we would have a mostly balanced tree, and a balanced tree doesn't provide much compression!
+An efficient coding tree is actually a somewhat skewed tree, to take advantage of the skewed frequency distributions in the data.
+This is something that really happens with natural language data, since word frequency distribution generally follows Zipf's Law. That's one reason Huffman encoding and similar
+methods are popular techniques for things like tokenization in deep learning models like BERT.
